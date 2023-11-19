@@ -1,0 +1,176 @@
+﻿
+@model IEnumerable<EcomerceWebASP.Models.Products>
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var Lst = ViewBag.datarelateto as IEnumerable<EcomerceWebASP.Models.Products>;
+    var data = ViewBag.List as IEnumerable<EcomerceWebASP.Models.Products>;
+}
+
+    @Styles.Render("~/Content/main")
+    @Styles.Render("~/Content/detail")
+    @Styles.Render("~/Content/toastr")
+
+    <style>
+
+        .detail-size .size-D {
+            width: 40px;
+            height: 40px;
+            background-color: #6c757d;
+            line-height: 40px;
+            text-align: center;
+            border: 1px solid #6c757d;
+            font-size: 12px;
+            font-weight: 500;
+            color: #050505;
+            cursor: not-allowed;
+            transition: all 0.2s ease-in-out;
+        }
+    </style>
+    <div class="container">
+        @{
+            foreach (var item in data)
+            {
+                <div class="breadcrumb">
+                    <div class="grid">
+                        <a href="/">Trang chủ / </a>
+                        <span style="font-size:1.3rem"> @item.Types.nameType / </span>
+                        <span style="font-size:1.2rem" class="br-main"> @item.nameProduct </span>
+                    </div>
+                </div>
+                break;
+            }
+        }
+
+        <!-- detail -->
+        <div class="detail">
+
+            @{
+                foreach (var item in data)
+                {
+                    <div class="grid">
+                        <div class="row">
+                            <div class="col">
+
+                                <div class="slider-detail">
+                                    <div class="product-detail">
+                                        <img class="img-detail"
+                                             src="@item.ImageProduct.Last().URLImage"
+                                             alt=""
+                                             onclick="clickme(this)" />
+                                        <img class="img-detail"
+                                             src="@item.ImageProduct.First().URLImage"
+                                             alt=""
+                                             onclick="clickme(this)" />
+                                        <!-- cái hình này khó chịu quá -->
+                                        <!--<img class="img-detail"
+                                         src="https://product.hstatic.net/200000321771/product/269829084_354055683202680_6749155750206382252_n_9c2f4d6b48824a00ae29f456d9f05570_compact.jpg"
+                                         alt=""
+                                         onclick="clickme(this)" />
+                                    <img class="img-detail"
+                                         src="https://product.hstatic.net/200000321771/product/271493062_398113702111615_5709360159503487208_n_c086fdbf71204097bda383dd63239d95_compact.jpg"
+                                         alt=""
+                                         onclick="clickme(this)" />-->
+                                    </div>
+                                    <div class="preview">
+                                        <img src="@item.ImageProduct.First().URLImage" id="imagebox" alt="" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-cus">
+                                <div class="content">
+                                    <div style="font-size:1.8rem" class="detail-title">@item.nameProduct</div>
+                                    <div style="display:none; font-size:1.8rem" class="idFood">@item.idProduct</div>
+                                    <div class="detail-price info-price total-money">@item.price,000₫</div>
+                                    <div style="font-size:1.2rem" class="detail-title sku">Quy cách: @item.sku</div>
+
+                                    <div class="detail-amount">
+                                        <button class="button-amount button-minus">-</button>
+                                        <input type="number" class="input-amout" readonly value="1" />
+                                        <button class="button-amount button-add">+</button>
+                                    </div>
+
+                                    <div class="detail-button-add-cart button-hover" id="add-to-cart">Thêm vào giỏ hàng</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+
+
+
+                
+                <!-- detail end -->
+                <!-- mô tả sản phẩm -->
+                <div class="product-description">
+                    <h2 class="des-heading">MÔ TẢ SẢN PHẨM</h2>
+                    <div class="description list-des-item">
+                        @item.description
+                    </div>
+
+                    <div class="address">
+                        <h4 class="des-title">◤HỆ THỐNG CỬA HÀNG:</h4>
+                        <ul class="list-des">
+                            <li class="list-des-item">
+                                - 155 Sư vạn Hạnh, Phường 13, Quận 10, TPHCM
+                            </li>
+                            <li class="list-des-item">- Hotline :079 939 1168</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- mô tả sản phẩm -->
+                    break;
+                }
+
+            }
+            <!-- sản phẩm tương tự -->
+            <div class="similar-product">
+                <div class="products">
+                    <div class="product-heading">SẢN PHẨM TƯƠNG TỰ</div>
+                    <div class="grid">
+                        <div class="grid__row">
+
+                            @foreach (var item in Lst)
+                            {
+                                <div class="grid__col-3">
+                                    <div style="display:none" id="idProduct">@item.idProduct</div>
+                                    <div class="product">
+                                        <img src="@item.ImageProduct.Last().URLImage" alt="" class="product-img product-show">
+
+                                        <img src="@item.ImageProduct.First().URLImage" alt="" class="product-img product-img-hover">
+
+                                    </div>
+                                    <div class="product-info">
+                                        <div class="product-title">
+                                            @item.nameProduct
+                                        </div>
+                                        <div class="product-price">
+                                            @item.price,000đ
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- sản phẩm tương tự -->
+        </div>
+
+    <script>
+        function clickme(smallImg) {
+            var fullImg = document.getElementById('imagebox');
+            fullImg.src = smallImg.src;
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    @Scripts.Render("~/bundles/product")
+    @Scripts.Render("~/bundles/calculate")
+    @Scripts.Render("~/bundles/detail")

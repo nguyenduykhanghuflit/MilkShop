@@ -1,0 +1,131 @@
+﻿@model IEnumerable<EcomerceWebASP.Models.Bills>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+@{ 
+    Dictionary<int, string> statusClass = new Dictionary<int, string>();
+    statusClass.Add(1, "badge-warning");
+    statusClass.Add(2, "badge-success");
+    statusClass.Add(3, "badge-secondary");
+    statusClass.Add(5, "badge-primary");
+    statusClass.Add(4, "badge-danger");
+
+}
+<!-- database jquery -->
+<link rel="stylesheet"
+      type="text/css"
+      href="https://cdn.datatables.net/v/bs5/jq-3.6.0/jszip-2.5.0/dt-1.11.5/b-2.2.2/b-html5-2.2.2/b-print-2.2.2/datatables.min.css" />
+<div id="content" class="">
+    <div class="content-main p-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/Bills">Đơn hàng</a></li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <a href="/Admin/Bills">Danh sách đơn hàng</a>
+                </li>
+            </ol>
+        </nav>
+      
+        <div class="table-responsive-sm">
+            <table id="table-product" class="table" style="width: 100%;font-size:13px;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th style="width:200px;text-align:left">Tên khách hàng</th>
+                        <th style="text-align:left">SĐT</th>
+                        <th style="width:100px">Địa chỉ</th>
+                        <th>Tổng tiền</th>
+                        <th>Ngày tạo</th>
+                        <th>Trạng thái</th>
+                        <th>Cập nhật trạng thái</th>
+
+
+                    </tr>
+                </thead>
+                <tbody id="renderData">
+
+
+                    @foreach (var item in Model)
+                    {
+                        string username = string.IsNullOrEmpty(item?.Users?.username) ? "Không phải thành viên" : item.Users.username;
+                        <tr>
+
+                            <td><a href="Bills/Edit/@item.idBill">@item.idBill</a></td>
+                            <td class="text-left text-wrap"><a href="Bills/Edit/@item.idBill">@item.nameBook (@username)</a></td>
+                     
+                            <td class="text-left"><span>0</span>@item.phone</td>
+                            <td class="text-left text-wrap">@item.address</td>
+                            <td> @String.Format("{0:N0} VNĐ", item.Total * 1000)</td>
+                            <td>@item.createdAt</td>
+                            <td>
+                                <span style="padding:10px 7px" class="badge @statusClass[item.statusId]">@item.BillStatus.statusName</span>
+                            </td>
+                            <td>
+
+                                <div class="dropdown-cus">
+                                    <button class="dropbtn">Chọn trạng thái</button>
+                                    <div class="dropdown-content">
+                                        @foreach (var status in ViewBag.BillStatus as List<EcomerceWebASP.Models.BillStatus>)
+                                        {
+
+                                            <span onclick="UpdateStatus('@item.idBill','@status.id')" class="item badge @statusClass[status.id]">@status.statusName</span>
+
+                                        }
+
+                                    </div>
+                                </div>
+                            </td>
+
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@Scripts.Render("~/bundles/admin/jquery")
+
+<script>
+
+    const UpdateStatus = async (idBill, statusId) => {
+
+        const req = await fetch(`/Admin/Bills/UpdateStatus?idBill=${idBill}&statusId=${statusId}`)
+
+        const resJson = await req.json()
+
+        console.log(resJson)
+
+        if (resJson == "1") {
+            alert("Cập nhật trạng thái thành công")
+            window.location.reload()
+        }
+        else {
+            alert("Cập nhật trạng thái thất bại")
+        }
+
+    }
+
+
+    $('.d-bill').addClass('active');
+</script>
+
+<!-- database jquery -->
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script type="text/javascript"
+        src="https://cdn.datatables.net/v/bs5/jq-3.6.0/jszip-2.5.0/dt-1.11.5/b-2.2.2/b-html5-2.2.2/b-print-2.2.2/datatables.min.js"></script>
+
+
+
+
+
+@*@Scripts.Render("~/bundles/admin/donhang")*@

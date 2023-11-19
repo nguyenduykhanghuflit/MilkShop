@@ -1,0 +1,30 @@
+﻿@model EcomerceWebASP.Models.Types
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div id="content" class="">
+    <div class="content-main p-4">
+
+        <div>
+            <h3>Danh mục</h3>
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.nameType)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.nameType)
+                </dd>
+
+            </dl>
+        </div>
+        <p>
+            @Html.ActionLink("Edit", "Edit", new { id = Model.idType }) |
+            @Html.ActionLink("Back to List", "Index")
+        </p>
+        </div>
+    </div>

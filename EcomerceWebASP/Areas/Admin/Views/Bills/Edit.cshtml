@@ -1,0 +1,317 @@
+﻿
+@model EcomerceWebASP.Models.Bills
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .title-detail {
+        color: black;
+    }
+
+    .text-sm {
+        font-size: 15px;
+        font-weight: bolder;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 10px 0;
+    }
+
+        .text-sm span {
+            font-weight: 500;
+        }
+
+    h5.text-right {
+        font-weight: 500;
+    }
+
+        h5.text-right span {
+            font-weight: normal;
+        }
+
+    h5.text-sm input, h5.text-sm select {
+        font-weight: 500;
+        margin: 5px 0;
+        color: #333;
+    }
+
+    .dln {
+        display: none;
+    }
+
+    .vl-err {
+        color: red;
+        padding: 5px 5px;
+        font-size: 13px;
+        display: none;
+    }
+
+    /* The Modal (background) */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 2;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+    }
+
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        margin-left: 520px;
+        padding: 20px 20px;
+        border: 1px solid #888;
+        width: 400px;
+    }
+
+
+    .btnClose {
+        padding: 0 20px;
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        text-align: right;
+    }
+
+        .btnClose:hover,
+        .btnClose:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .modal-message {
+        text-align: center;
+        color: blue;
+        font-size: 20px;
+    }
+</style>
+
+
+@{
+    Dictionary<int, string> statusClass = new Dictionary<int, string>();
+    statusClass.Add(1, "badge-warning");
+    statusClass.Add(2, "badge-success");
+    statusClass.Add(3, "badge-secondary");
+    statusClass.Add(5, "badge-primary");
+    statusClass.Add(4, "badge-danger");
+
+    EcomerceWebASP.Models.Bills data = ViewBag.data;
+}
+<div id="modalSuccess" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <p class="modal-message">Cập nhật thành công</p>
+    </div>
+
+</div>
+<div id="content" class="">
+    <div class="content-main p-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/Bills">Đơn hàng</a></li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    Cập nhật đơn hàng
+                </li>
+            </ol>
+        </nav>
+        <div class="table-responsive-sm">
+
+
+
+            <h4 class="text-center title-detail">CẬP NHẬT THÔNG TIN ĐƠN HÀNG</h4>
+            <h5 class="text-sm">
+                Mã đơn hàng:
+                <input readonly class="form-control" type="text" value="@data.idBill" id="idBill" />
+            </h5>
+            <h5 class="text-sm">
+                Ngày mua:
+                <input readonly class="form-control" type="text" value="@data.createdAt" id="idBill" />
+            </h5>
+            <h5 class="text-sm">
+                Họ tên người mua hàng:
+                <input required class="form-control" value="@data.nameBook" type="text" id="fullname" />
+                <small class="vl-err errFullname"></small>
+
+            </h5>
+            <h5 class="text-sm">
+                Số điện thoại:
+                @{
+                    string phone = "0" + data.phone;
+                }
+                <input required type="number" value="@phone" class="form-control" id="phone" />
+                <small class="vl-err errPhone"></small>
+            </h5>
+            <h5 class="text-sm">
+                Địa chỉ:
+                <input required class="form-control" id="address" value="@data.address" />
+                <small class="vl-err errAddress"></small>
+            </h5>
+            <div class="d-flex align-items-center justify-content-start w-100">
+
+                <h5 class="text-sm">
+                    Trạng thái:
+                    <span id="billStatus">
+                        <span style="padding:10px 7px" class="badge @statusClass[data.statusId]">@data.BillStatus.statusName</span>
+                    </span>
+                </h5>
+
+                <div class="text-sm mx-2 d-flex align-items-center">
+             
+                    <select class="form-control mx-2" onchange="UpdateStatus('@data.idBill')" id="statusUpdate">
+                        @foreach (var status in ViewBag.BillStatus as List<EcomerceWebASP.Models.BillStatus>)
+                        {
+                            if (data.statusId == status.id)
+                            {
+
+                                <option selected value="@status.id">@status.statusName</option>
+
+                            }
+                            else
+                            {
+                                <option value="@status.id">@status.statusName</option>
+                            }
+                        }
+
+                    </select>
+                </div>
+            </div>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">Tên sản phẩm</th>
+                        <th scope="col">Số lượng</th>
+                        <th scope="col">Giá bán</th>
+                        <th scope="col">Tổng tiền</th>
+
+                    </tr>
+                </thead>
+                <tbody id="renderItem">
+                    @foreach(var item in data.DetailBIll) { 
+                    <tr class="rowDt">
+                        <td class="dln idDetailBill">@item.idDetailBill</td>
+                        <td class="dln idProduct">@item.idProduct</td>
+                        <td class="nameProduct">@item.Products.nameProduct</td>
+                        <td> @item.qty</td>
+                        <td class="fmt price">@String.Format("{0:N0} VNĐ", item.Products.price * 1000)</td>
+                        <td class="fmt intoMoney">@String.Format("{0:N0} VNĐ", item.intoMoney * 1000) </td>
+                    </tr>
+                    
+                    }
+                </tbody>
+            </table>
+        </div>
+        <h5 class="text-right">Tổng cộng:<span class="fmt" id="Total"> @String.Format("{0:N0} VNĐ", data.Total * 1000) </span></h5>
+        <button type="button" onclick="saveData('@data.idBill')" class="btn btn-primary saveData">Cập nhật</button>
+    </div>
+</div>
+
+
+@Scripts.Render("~/bundles/admin/jquery")
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+
+
+
+    function CheckRequire(input) {
+        if (input.val() == '') {
+            return false;
+        }
+        return true;
+    }
+
+
+    function saveData(idBill) {
+        let nameBook = $('#fullname').val()
+        let phone = $('#phone').val().toString().slice(1);
+        let address = $('#address').val()
+  
+
+        if (!CheckRequire($('#fullname')))
+            $('.errFullname').css('display', 'block').html("Tên khách hàng không được để trống")
+        else $('.errFullname').css('display', 'none').html("")
+
+        if (!CheckRequire($('#phone')))
+            $('.errPhone').css('display', 'block').html("Số điện thoại không được để trống")
+        else $('.errPhone').css('display', 'none').html("")
+
+        if (!CheckRequire($('#address')))
+            $('.errAddress').css('display', 'block').html("Địa chỉ giao hàng không được để trống")
+        else $('.errAddress').css('display', 'none').html("")
+
+
+        if (
+            CheckRequire($('#fullname')) &&
+            CheckRequire($('#phone')) &&
+            CheckRequire($('#address'))
+        ) {
+            axios.post('/Admin/Bills/UpdateBill', { idBill, nameBook, phone, address })
+                .then(function (response) {
+                    console.log(response);
+                    if (response.data == "success") {
+                        ShowUpdateSuccess()
+
+                    }
+                    else {
+                        alert("Lỗi: Cập nhật không thành công")
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+        }
+    }
+
+    var modalSuccess = document.getElementById("modalSuccess");
+    var modal = document.querySelector(".modal")
+
+    function ShowUpdateSuccess() {
+        modalSuccess.style.display = "block";
+    }
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+            window.location.reload()
+        }
+    }
+
+
+    const UpdateStatus = async (idBill) => {
+
+        var statusId = $('#statusUpdate').val();
+        const req = await fetch(`/Admin/Bills/UpdateStatus?idBill=${idBill}&statusId=${statusId}`)
+
+        const resJson = await req.json()
+
+        console.log(resJson)
+
+        if (resJson == "1") {
+            ShowUpdateSuccess();
+            window.location.reload()
+        }
+        else {
+            alert("Cập nhật trạng thái thất bại")
+        }
+
+    }
+
+
+
+</script>
+
+
+
+

@@ -1,0 +1,287 @@
+﻿@model IEnumerable<EcomerceWebASP.Models.Bills>
+@{
+    ViewBag.Title = "MyBill";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .container {
+        margin-top: 200px;
+        width: 100%;
+    }
+
+    .my-bill {
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    .bill-title {
+        text-align: center;
+        font-size: 22px;
+        font-weight: bolder;
+    }
+
+    .bill-item {
+        width: 900px;
+        border-radius: 10px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px #808080 solid;
+    }
+
+    .item {
+        height: 120px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .img-product {
+        width: 100px;
+        height: 100px;
+    }
+
+        .img-product img {
+            width: 100%;
+            height: 100%;
+        }
+
+    .info {
+        width: calc(100% - 60px);
+        padding: 10px 10px;
+        font-size: 15px;
+    }
+
+        .info span {
+            font-weight: bolder;
+        }
+
+        .info div + div {
+            margin: 6px 0;
+        }
+
+    .total-money {
+        font-size: 22px;
+        padding: 20px;
+    }
+
+        .total-money span {
+            font-weight: bolder;
+        }
+
+    .text-detail-bill {
+        margin-top: 10px;
+        margin-left: 30px;
+        font-weight: bolder;
+        font-size: 16px;
+    }
+
+        .text-detail-bill span {
+            font-weight: normal;
+        }
+
+    .item {
+        margin-top: 15px;
+    }
+
+    .btn-cancel {
+        background-color: #f84343;
+        color: white;
+        border-radius: 7px;
+        padding: 12px 7px;
+        outline: none;
+        overflow: hidden;
+        border: none;
+        margin-left: 10px;
+        cursor: pointer;
+    }
+
+        .btn-cancel:hover {
+            background-color: #f72b2b;
+        }
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 99999999; /* Sit on top */
+        padding-top: 150px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 40px;
+        border: 1px solid #888;
+        width: 50%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        display:flex;
+        justify-content:flex-end;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+
+@{
+    var data = ViewBag.data as List<EcomerceWebASP.Models.Bills>;
+
+    Dictionary<int, string> statusStyles = new Dictionary<int, string>
+{
+            { 1, "background-color: #ffc107; color: #000000;" },    // Màu nền: màu vàng, Màu văn bản: màu đen
+            { 2, "background-color: #28a745; color: #ffffff;" },     // Màu nền: màu xanh lá cây, Màu văn bản: màu trắng
+            { 3, "background-color: #007bff; color: #ffffff;" },   // Màu nền: màu xanh dương, Màu văn bản: màu trắng
+            { 5, "background-color: #dc3545; color: #ffffff;" },     // Màu nền: màu đỏ, Màu văn bản: màu trắng
+            { 4, "background-color: #6c757d; color: #ffffff;" }     // Màu nền: màu xám, Màu văn bản: màu trắng
+      };
+
+}
+<div class="container">
+    <div class="my-bill">
+        <h1 class="bill-title">DANH SÁCH ĐƠN HÀNG</h1>
+
+
+        <div class="list-bill">
+
+
+
+            @foreach (var item in data)
+            {
+
+                var total = item.Total * 1000;
+                string phone = "0" + item.phone;
+                <div class="bill-item">
+                    <div class="text-detail-bill">Mã đơn hàng: <span> #@item.idBill</span></div>
+                    <div class="text-detail-bill">Người nhận hàng: <span> @item.nameBook</span></div>
+                    <div class="text-detail-bill">Số điện thoại:<span> @phone</span> </div>
+                    <div class="text-detail-bill">Ngày đặt:  <span>@item.createdAt</span></div>
+                    <div class="text-detail-bill">
+                        Trạng thái:
+                        <span style="@statusStyles[item.statusId] padding:5px;border-radius:3px;font-weight:bolder">@item.BillStatus.statusName</span>
+                    </div>
+                    <div class="text-detail-bill">Địa chỉ giao hàng:<span> @item.address</span></div>
+                    <div class="text-detail-bill">Tổng số sản phẩm:<span> @item.totalQty</span></div>
+                    <div class="text-detail-bill">Tổng tiền: <span> @String.Format("{0:N0} VNĐ", total)</span> </div>
+
+
+                    @foreach (var i in item.DetailBIll)
+                    {
+
+                        <div class="item">
+                            <div class="img-product">
+                                <img src="@i.Products.ImageProduct.First().URLImage" alt="" />
+                            </div>
+                            <div class="info">
+                                <div class="info-name"><span>Tên sản phẩm:  </span>@i.Products.nameProduct</div>
+                                <div class="info-price"><span>Giá: </span>@String.Format("{0:N0} VNĐ", i.Products.price * 1000)</div>
+                                <div class="info-qty"><span>Số lượng: </span> @i.qty</div>
+                                <div class="info-total"><span>Tổng: </span> @String.Format("{0:N0} VNĐ", i.intoMoney * 1000)</div>
+                            </div>
+                        </div>
+
+                    }
+                    <div class="total-money" style="display:flex; align-items:center;justify-content:space-between;">
+                        <span>Tổng cộng: <span style="color:#f75f1c;font-weight:bolder">@String.Format("{0:N0} VNĐ", item.Total * 1000)</span></span>
+
+                        @if (item.statusId == 1 || item.statusId == 2)
+                        {
+                            <button class="btn-cancel" onclick="handleShowModalCancel('@item.idBill')">HỦY ĐƠN HÀNG</button>
+                        }
+                    </div>
+
+
+
+                </div>
+            }
+        </div>
+
+        <input type="text" id="idBill" value="" hidden />
+
+    </div>
+</div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="text-modal" style="display:flex;align-items:center;justify-content:center">
+            <p style="text-align:center;color:red;font-weight:bolder;font-size:15px">Bạn có chắc muốn hủy đơn hàng này</p>
+            <button class="btn-cancel" onclick="handleCancel()">Xác nhận hủy</button>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+
+    // Get the modal
+    var modal = document.getElementById("myModal");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+  
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    const handleShowModalCancel =(idBill) => {
+        modal.style.display = "block";
+        document.getElementById('idBill').value = idBill;
+        @*/home/cancelbill?idBill=@item.idBill*@
+    }
+    const handleCancel = async () => {
+        const idBill = document.getElementById('idBill').value;
+
+        const req = await fetch('/Home/CancelBill?idBill=' + idBill);
+        const json = await req.json();
+        console.log(json)
+        modal.style.display = "none";
+        document.querySelector('.text-modal').innerHTML =`<p style="text-align:center;color:blue;font-weight:bolder;font-size:15px">Bạn đã hủy thành công đơn hàng này</p>`
+        modal.style.display = "block";
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+            window.location.reload()
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+                window.location.reload()
+            }
+        }
+
+    }
+</script>
+
+

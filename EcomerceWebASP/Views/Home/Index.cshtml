@@ -1,0 +1,130 @@
+﻿
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@{ 
+    List<EcomerceWebASP.Models.Products> data = ViewBag.list;
+    List<EcomerceWebASP.Models.Products> data2 = ViewBag.list2;
+}
+@Styles.Render("~/Content/main")
+@Styles.Render("~/Content/product")
+<!-- ----------Slider---------- -->
+<div class="slider">
+    <a href="/" class="">
+        <img src="https://cdn.suatuoi.com/images/banner/desktop/devondale.jpg"
+             alt="" />
+    </a>
+</div>
+<!-- ----------Slider---------- -->
+<!-- ----------Banner---------- -->
+<div class="banner">
+    <div class="banner-item">
+        <img src="https://shopsuatot.vn/public/upload/catepro/1570092985sua-tang-can-cho-be.png"
+             alt="" />
+    </div>
+    <div class="banner-item">
+        <img src="https://shopsuatot.vn/public/upload/catepro/1570093122sua-tang-chieu-cao-cho-be.png"
+             alt="" />
+    </div>
+    <div class="banner-item ">
+        <img src="https://shopsuatot.vn/public/upload/catepro/1696057732sua-cho-nguoi-tieu-duong.jpg"
+             alt="" />
+    </div>
+    
+</div>
+
+<!-- ----------Banner---------- -->
+
+
+<!-- Product -->
+<div class="products">
+    <div class="product-headingg">SẢN TĂNG CÂN CHO BÉ </div>
+    <div class="grid">
+        <div class="grid__row">
+
+
+
+            @foreach (var item in data)
+            {
+                <div class="grid__col-3">
+                    <div class="product">
+                        <h1 style="display:none" id="idProduct">@item.idProduct</h1>
+                        <img src="@item.ImageProduct.Last().URLImage"
+                             alt=""
+                             class="product-img product-show" />
+                        <img src="@item.ImageProduct.First().URLImage"
+                             alt=""
+                             class="product-img product-img-hover" />
+                    </div>
+                    <div class="product-info">
+                        <div class="product-title">
+                            @item.nameProduct
+                        </div>
+                        <div class="product-price">@item.price,000₫</div>
+                    </div>
+                </div>
+
+            }
+
+        </div>
+
+    </div>
+</div>
+<!-- Product -->
+<!-- ----------Banner---------- -->
+<div style="margin-top:30px" class="banner">
+    <div class="banner-item">
+        <img src="https://shopsuatot.vn/public/upload/catepro/1696057895sua-cho-nguoi-gay.jpg"
+             alt="" />
+    </div>
+    <div class="banner-item">
+        <img src="https://shopsuatot.vn/public/upload/catepro/1696057997sua-cho-nguoi-cao-tuoi.jpg"
+             alt="" />
+    </div>
+    <div class="banner-item ">
+        <img src="https://shopsuatot.vn/public/upload/catepro/1570092658.png"
+             alt="" />
+    </div>
+</div>
+<!-- ----------Banner---------- -->
+<!-- Product -->
+
+
+<div class="products">
+    <div style="text-transform:uppercase" class="product-headingg">SŨA TĂNG CHIỀU CAO CHO BÉ</div>
+    <div class="grid">
+        <div class="grid__row">
+            @foreach (var item in data2)
+            {
+             
+                <div class="grid__col-3">
+                    <div class="product">
+                        <h1 style="display:none" id="idProduct">@item.idProduct</h1>
+                        <img src="@item.ImageProduct.Last().URLImage"
+                             alt=""
+                             class="product-img product-show" />
+                        <img src="@item.ImageProduct.First().URLImage"
+                             alt=""
+                             class="product-img product-img-hover" />
+                    </div>
+                    <div class="product-info">
+                        <div class="product-title">
+                            @item.nameProduct
+                        </div>
+                        <div class="product-price">@item.price,000₫</div>
+                    </div>
+                </div>
+
+            
+            }
+
+        </div>
+
+    </div>
+</div>
+<!-- Product -->
+@Scripts.Render("~/bundles/product")
+
+
+
