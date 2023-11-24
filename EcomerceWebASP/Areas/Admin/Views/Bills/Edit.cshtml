@@ -164,7 +164,7 @@
                 </h5>
 
                 <div class="text-sm mx-2 d-flex align-items-center">
-             
+
                     <select class="form-control mx-2" onchange="UpdateStatus('@data.idBill')" id="statusUpdate">
                         @foreach (var status in ViewBag.BillStatus as List<EcomerceWebASP.Models.BillStatus>)
                         {
@@ -195,20 +195,29 @@
                     </tr>
                 </thead>
                 <tbody id="renderItem">
-                    @foreach(var item in data.DetailBIll) { 
-                    <tr class="rowDt">
-                        <td class="dln idDetailBill">@item.idDetailBill</td>
-                        <td class="dln idProduct">@item.idProduct</td>
-                        <td class="nameProduct">@item.Products.nameProduct</td>
-                        <td> @item.qty</td>
-                        <td class="fmt price">@String.Format("{0:N0} VNĐ", item.Products.price * 1000)</td>
-                        <td class="fmt intoMoney">@String.Format("{0:N0} VNĐ", item.intoMoney * 1000) </td>
-                    </tr>
-                    
+                    @{ 
+                        int subTotal = 0;
+                    }
+                    @foreach (var item in data.DetailBIll)
+                    {
+                        <tr class="rowDt">
+                            <td class="dln idDetailBill">@item.idDetailBill</td>
+                            <td class="dln idProduct">@item.idProduct</td>
+                            <td class="nameProduct">@item.Products.nameProduct</td>
+                            <td> @item.qty</td>
+                            <td class="fmt price">@String.Format("{0:N0} VNĐ", item.Products.price * 1000)</td>
+                            <td class="fmt intoMoney">@String.Format("{0:N0} VNĐ", item.intoMoney * 1000) </td>
+                        </tr>
+                        subTotal += item.intoMoney;
+
                     }
                 </tbody>
             </table>
         </div>
+        <h5 class="text-right">Shipping:<span class="fmt" id="Total"> @String.Format("{0:N0} VNĐ", 50 * 1000) </span></h5>
+        <h5 class="text-right">Tạm tính:<span class="fmt" id="Total"> @String.Format("{0:N0} VNĐ", (subTotal +50) * 1000) </span></h5>
+        <h5 class="text-right">Khuyễn mãi:<span class="fmt" id="Total"> @data.discount %</span></h5>
+        <h5 class="text-right">Voucher:<span class="fmt" id="Total"> @data.voucherCode</span></h5>
         <h5 class="text-right">Tổng cộng:<span class="fmt" id="Total"> @String.Format("{0:N0} VNĐ", data.Total * 1000) </span></h5>
         <button type="button" onclick="saveData('@data.idBill')" class="btn btn-primary saveData">Cập nhật</button>
     </div>

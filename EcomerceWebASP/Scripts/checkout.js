@@ -141,7 +141,7 @@ $('#save_btn').click(() => {
                 idBill: idBill,
                 idUser: idUser !== null ? idUser : null,
                 Shipping: 50,
-                Total: total,
+                Total: afterDiscount,
                 totalQty: totalQty,
                 nameBook: fullname.value,
                 email: email.value,
@@ -149,6 +149,8 @@ $('#save_btn').click(() => {
                 address: diachi,
                 PTTT: "Tien Mat",
                 detailBill: dsChiTietDH,
+                voucherCode: document.getElementById('voucherCode').value,
+
 
             },
             dataType: 'json',

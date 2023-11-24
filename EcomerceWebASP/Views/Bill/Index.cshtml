@@ -74,6 +74,20 @@
                 text-decoration: none;
                 cursor: pointer;
             }
+
+
+        .btn-checkvoucher{
+            border:none;
+            outline:none;
+            background-color:#ff6a00;
+            border-radius:5px;
+            color:white;
+            padding:5px 8px;
+            cursor:pointer;
+        }
+            .btn-checkvoucher:hover {
+                background-color: #e1772c;
+            }
     </style>
 
 </head>
@@ -175,6 +189,21 @@
                                 <div class="total-text">Phí vận chuyển:</div>
                                 <div class="total-text total-money">50,000 VND</div>
                             </div>
+                            <div class="total">
+                                <div class="form-inline form-item">
+                                    <div class="form-control w-2">
+                                        <input placeholder="Voucher" id="voucherCode" name="voucherCode" />
+                                        <small class="err-voucher" style="margin-top:10px;"></small>
+                                    </div>
+                                    <button onclick="checkVoucher()" class="btn-checkvoucher">Kiểm tra</button>
+
+                                </div>
+                               
+                            </div>
+                            <div class="total">
+                                <div class="total-text">Khuyến mãi:</div>
+                                <div class="total-text total-money" id="discount">0 VND</div>
+                            </div>
                         </div>
                         <div class="payment-total total">
                             <div class="total-text">Tổng cộng:</div>
@@ -239,6 +268,10 @@
     let tamTinh = document.getElementById('tamTinh');
     let render = document.getElementById('detailProduct');
     let total = 0
+    let afterDiscount = 0;
+
+    let totalNum = 0;
+    let tamTinhNum = 0;
     function renderTableLeft(dataList) {
         $(document).ready(() => {
             let str = ''
@@ -278,16 +311,42 @@
          
 
             let m = parseInt(total) + 50;
+            totalNum = Number(m);
+            tamTinhNum=Number(total)
            @* console.log(m)*@
             totalMoney.innerHTML = m.toLocaleString() + ",000VND";
             tamTinh.innerHTML = total.toLocaleString() + ",000VND";
             render.innerHTML = str;
 
-
-
-
+         
         })
     }
     renderTableLeft(listCart);
+
+
+    const checkVoucher = async () => {
+        const voucherCode = document.getElementById('voucherCode').value;
+
+        if (voucherCode) {
+            const res = await fetch(`/bill/checkvoucher?voucherCode=${voucherCode}`)
+            const voucherData = await res.json();
+            const errVoucher = document.querySelector('.err-voucher');
+            if (voucherData.err) {
+                errVoucher.innerHTML = voucherData.msg;
+                totalMoney.innerHTML = totalNum.toLocaleString() + ',000VND'
+            }
+            else {
+                console.log(voucherData)
+                const discount = Number(voucherData.data.discount);
+                errVoucher.innerHTML = `Voucher giảm ${discount}%`;
+
+                const discountM = (tamTinhNum * discount) / 100;
+                document.getElementById('discount').innerHTML = discountM.toLocaleString()+',000VND'
+
+                afterDiscount = tamTinhNum - discountM + 50;
+                totalMoney.innerHTML = afterDiscount.toLocaleString() + ',000VND'
+            }
+        }
+    }
 </script>
 
